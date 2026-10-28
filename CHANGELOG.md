@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.1.0
+
+- 16:9 game toggle, saved per game. While a 16:9-only game is on screen, the
+  corners move to its picture's edges, 40 pixels from the top and bottom on the
+  Deck. They return to the screen corners in the frame Steam's menus, Quick
+  Access or the library open, following Steam's composition state and focus
+  without polling.
+- Steam behaves as it does without the plugin. Steam's own interface already
+  shows the corners, so Notification composition is requested only while a
+  game is on screen with nothing over it, and only 0.4 s after Steam's
+  interface has hidden. Holding it all the time, as before, caused two
+  differences from stock Steam:
+  - closing Quick Access flashed a black screen with an "Abort game" footer
+    for up to a second;
+  - side menus slid away instead of vanishing.
+- Corners fade in and out over 0.4 s: when turned on or off, and when they
+  return over a game after a menu closes. The fade is a CSS opacity
+  transition that runs only during those changes.
+- The top-left corner fades out while Steam's volume popin is shown, so the
+  popin is no longer cut off under it. It fades over 0.22 s, as fast as the
+  popin slides in, and returns over 0.4 s. A MutationObserver watches the
+  class of the popin's single element.
+- The composition request is named "Round Corners" in Steam's composition log.
+- After a reload or update, Decky can keep showing the old instance's panel
+  while it stays open in Quick Access. That panel now asks you to reopen
+  Round Corners instead of changing settings the new instance doesn't see.
+
 ## 1.0.0
 
 First release. Changes since 0.4.0:

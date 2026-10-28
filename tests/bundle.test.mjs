@@ -20,10 +20,10 @@ async function loadPlugin({ compatible = true } = {}) {
   };
   let portalTarget;
   const jsx = (type, props) => ({ type, props });
-  function composition(state) {
+  function composition(state, name) {
     // Discovery markers from Steam's internal hook:
     // AddMinimumCompositionStateRequest ChangeMinimumCompositionStateRequest RemoveMinimumCompositionStateRequest
-    compositionStates.push(state);
+    compositionStates.push([state, name]);
   }
   const context = vm.createContext({
     console, setTimeout, clearTimeout,
@@ -38,7 +38,8 @@ async function loadPlugin({ compatible = true } = {}) {
       },
     },
     SP_REACT: { Component: class {},
-      useState: (initial) => [initial(), () => {}], useEffect() {}, useMemo: (create) => create(),
+      useState: (initial) => [typeof initial === "function" ? initial() : initial, () => {}],
+      useEffect() {}, useMemo: (create) => create(), useRef: (current) => ({ current }),
       useSyncExternalStore: (_subscribe, getSnapshot) => getSnapshot() },
     SP_JSX: { jsx, jsxs: jsx, Fragment: "fragment" },
     SP_REACTDOM: { createPortal: (children, target) => { portalTarget = target; return children; } },
@@ -72,9 +73,12 @@ test("built plugin registers, updates all four corners, hides at zero and unload
   assert.equal(surface.props.shape, -50);
   assert.equal(surface.props.radius, 48);
   const graphics = surface.type(surface.props);
-  assert.deepEqual(host.compositionStates, [1]);
+  // Without Steam's composition store the request is held all the time.
+  const [request] = graphics.props.children;
+  assert.equal(request.type(request.props), null);
+  assert.deepEqual(host.compositionStates, [[1, "Round Corners"]]);
   assert.equal(host.getPortalTarget(), host.visibleBody);
-  const corners = graphics.props.children;
+  const corners = graphics.props.children.at(-1);
   assert.equal(corners.length, 4);
   for (const corner of corners) {
     assert.equal(corner.props.style.width, 32);

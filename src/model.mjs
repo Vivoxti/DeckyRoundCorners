@@ -1,15 +1,17 @@
 export const STORAGE_KEY = "decky-round-corners:v1";
-/** @type {Readonly<{ enabled: boolean, radius: number, shape: number }>} */
-export const DEFAULT_SETTINGS = Object.freeze({ enabled: false, radius: 24, shape: 0 });
+/** @type {Readonly<{ enabled: boolean, radius: number, shape: number, letterboxApps: readonly number[] }>} */
+export const DEFAULT_SETTINGS = Object.freeze({ enabled: false, radius: 24, shape: 0, letterboxApps: Object.freeze([]) });
 // Saved values stay up to this; the overlay and slider use getMaxRadius for the
 // current UI scale, so a setting comes back when the scale does.
 export const MAX_RADIUS = 96;
+const MAX_LETTERBOX_APPS = 1000;
 
 /** @param {unknown} input */
 export function normalizeSettings(input) {
   const value = input && typeof input === "object" ? input : {};
   const radius = "radius" in value ? value.radius : undefined;
   const shape = "shape" in value ? value.shape : undefined;
+  const apps = "letterboxApps" in value && Array.isArray(value.letterboxApps) ? value.letterboxApps : [];
   return {
     enabled: "enabled" in value && value.enabled === true,
     radius: typeof radius === "number" && Number.isFinite(radius)
@@ -18,6 +20,9 @@ export function normalizeSettings(input) {
     shape: typeof shape === "number" && Number.isFinite(shape)
       ? Math.min(100, Math.max(-100, Math.round(shape)))
       : DEFAULT_SETTINGS.shape,
+    // App IDs of games that only run in 16:9.
+    letterboxApps: [...new Set(apps.filter((appid) => Number.isSafeInteger(appid) && appid > 0))]
+      .slice(0, MAX_LETTERBOX_APPS),
   };
 }
 
@@ -34,7 +39,7 @@ export function createSettingsStore(storage, { saveDelay = 0 } = {}) {
   } catch {
     persistenceError = "Settings could not be loaded. Defaults are in use.";
   }
-  let snapshot = { ...settings, persistenceError, compatibilityError: "" };
+  let snapshot = { ...settings, persistenceError, compatibilityError: "", unloaded: false };
   /** @type {Set<() => void>} */
   const listeners = new Set();
   const notify = () => listeners.forEach((listener) => listener());
@@ -69,6 +74,7 @@ export function createSettingsStore(storage, { saveDelay = 0 } = {}) {
     },
     /** @param {Partial<typeof DEFAULT_SETTINGS>} patch */
     update(patch) {
+      if (snapshot.unloaded) return;
       settings = normalizeSettings({ ...settings, ...patch });
       snapshot = { ...snapshot, ...settings };
       if (saveDelay > 0) {
@@ -79,8 +85,16 @@ export function createSettingsStore(storage, { saveDelay = 0 } = {}) {
       }
       notify();
     },
-    /** Writes a delayed save now, e.g. before the plugin unloads. */
+    /** Writes a delayed save now. */
     flush: savePending,
+    /** Saves pending changes and ignores later updates. After a reload Decky
+     * can keep showing the old panel, which must not overwrite the settings
+     * of the plugin that replaced it. */
+    unload() {
+      savePending();
+      snapshot = { ...snapshot, unloaded: true };
+      notify();
+    },
     /** @param {string} message */
     setCompatibilityError(message) {
       snapshot = { ...snapshot, compatibilityError: message };

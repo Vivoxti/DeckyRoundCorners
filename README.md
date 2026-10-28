@@ -2,6 +2,7 @@
 
 Rounds the corners of the Steam Deck screen in Gaming Mode, with adjustable
 corner size and curvature.
+A per-game 16:9 toggle moves the corners to the picture's edges in 16:9-only games.
 
 ## Installing on Steam Deck
 
@@ -18,6 +19,10 @@ corner size and curvature.
   menus and the Store, which Steam draws above the corners, never cut into them.
 - The plugin uses an internal Steam hook that may change in a Steam update.
   If the hook is not found, the panel shows a message and the effect stays off.
+- Over games, the corners follow Steam's internal focus and composition
+  state. If a Steam update changes it, the plugin keeps Notification
+  composition requested all the time, as version 1.0.0 did, and 16:9 game mode
+  stays off.
 
 ## How it works
 
@@ -26,8 +31,13 @@ corner size and curvature.
   when you change the size or shape.
 - No backend, no per-frame code, no polling. Touch and buttons pass through
   the corners.
-- Corners stay visible over games through Steam's Notification composition
-  mode, which is released when the effect is turned off.
+- Steam's interface shows the corners by itself everywhere except over an
+  uncovered game. Only there, after Steam's own interface has hidden and a
+  0.4 s wait for Steam's closing animations, the plugin requests Steam's
+  Notification composition. That keeps the corners visible without taking
+  input. Steam's menus open and close exactly as without the plugin.
+- Corners fade in and out with a 0.4 s CSS opacity transition. The top-left
+  corner also steps aside for Steam's volume popin while it is shown.
 
 ## Performance
 

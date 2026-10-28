@@ -27,6 +27,17 @@ export function getMaxRadius(width, dpr) {
   return Math.max(0, Math.ceil((limit + 0.5) * 1280 / physicalWidth) - 1);
 }
 
+/** Height of each black bar above and below a 16:9 picture centered on a
+ * taller screen, in physical pixels: 40 on the Deck's 1280×800.
+ * @param {number} width @param {number} height @param {number} dpr
+ */
+export function getLetterboxInset(width, height, dpr) {
+  const pixelRatio = Number.isFinite(dpr) && dpr > 0 ? dpr : 1;
+  const physicalWidth = Math.max(1, Math.round(width * pixelRatio));
+  const physicalHeight = Math.max(1, Math.round(height * pixelRatio));
+  return Math.max(0, Math.round((physicalHeight - physicalWidth * 9 / 16) / 2));
+}
+
 // Integral of sqrt(r²-u²). Used only for pixels crossed by the circle.
 function circleIntegral(u, radius) {
   return 0.5 * (u * Math.sqrt(Math.max(0, radius * radius - u * u))

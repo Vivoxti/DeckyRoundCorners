@@ -2,8 +2,9 @@ import { findModuleExport } from "@decky/ui";
 
 // Steam's notification composition keeps the UI visible without taking input.
 // This internal hook can change with Steam updates. Never use SetComposition
-// directly: Steam's hook owns the request and releases it on unmount.
-export function findCompositionHook(): ((state: number) => void) | undefined {
+// directly: Steam's hook owns the request and releases it on unmount. The
+// name labels the request in Steam's composition log.
+export function findCompositionHook(): ((state: number, name: string) => void) | undefined {
   try {
     return findModuleExport((candidate: unknown) => {
       if (typeof candidate !== "function") return false;

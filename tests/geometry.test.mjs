@@ -1,6 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
-import { createCornerPixels, getCornerGeometry, getShapeExponent, pixelCoverage, shapedPixelCoverage, getMaxRadius, BAR_HEIGHT } from "../src/geometry.mjs";
+import { createCornerPixels, getCornerGeometry, getShapeExponent, pixelCoverage, shapedPixelCoverage, getMaxRadius, getLetterboxInset, BAR_HEIGHT } from "../src/geometry.mjs";
 
 test("fractional Steam UI scaling maps to whole physical pixels", () => {
   for (const dpr of [1, 1.25, 1.5, 2]) for (let radius = 1; radius <= 96; radius++) {
@@ -10,6 +10,15 @@ test("fractional Steam UI scaling maps to whole physical pixels", () => {
   }
   assert.deepEqual(getCornerGeometry(96, 854, 534, 1.5), { physicalRadius: 96, cssSize: 64 });
   assert.equal(getCornerGeometry(0, 854, 534, 1.5).physicalRadius, 0);
+});
+
+test("16:9 letterbox bars are measured in physical pixels at every UI scale", () => {
+  for (const [width, height, dpr] of [[1280, 800, 1], [854, 534, 1.5], [853.3333, 533.3333, 1.5], [640, 400, 2]]) {
+    assert.equal(getLetterboxInset(width, height, dpr), 40, "the Deck's 1280×800 leaves 40-pixel bars around 1280×720");
+  }
+  assert.equal(getLetterboxInset(1920, 1080, 1), 0, "a 16:9 screen has no bars");
+  assert.equal(getLetterboxInset(2560, 1080, 1), 0, "a wider screen has side bars, not top and bottom ones");
+  assert.equal(getLetterboxInset(1920, 1200, 1), 60);
 });
 
 test("shape changes bend the curve while keeping symmetric and monotone pixel coverage", () => {

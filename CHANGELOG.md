@@ -1,5 +1,12 @@
 # Changelog
 
+## Unreleased
+
+- Builds with pnpm, like the Decky plugin store: `pnpm-lock.yaml` replaces
+  `package-lock.json` with the same dependency versions. `pnpm test` builds
+  before testing without relying on a `pretest` script.
+- `plugin.json` points the store to a 1280×800 image, `assets/splash.png`.
+
 ## 1.1.0
 
 - 16:9 game toggle, saved per game. While a 16:9-only game is on screen, the

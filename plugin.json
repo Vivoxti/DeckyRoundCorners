@@ -5,6 +5,7 @@
   "api_version": 1,
   "publish": {
     "tags": ["appearance"],
-    "description": "Adjustable black rounded display corners in Gaming Mode."
+    "description": "Adjustable black rounded display corners in Gaming Mode.",
+    "image": "https://raw.githubusercontent.com/Vivoxti/DeckyRoundCorners/main/assets/splash.png"
   }
 }

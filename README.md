@@ -1,4 +1,4 @@
-# Round Corners — a Decky plugin
+# Round Corners - a Decky plugin
 
 Rounds the corners of the Steam Deck screen in Gaming Mode, with adjustable
 corner size and curvature.

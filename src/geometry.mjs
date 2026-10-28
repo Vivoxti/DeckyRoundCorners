@@ -10,9 +10,10 @@ export function getCornerGeometry(radius, width, height, dpr) {
   return { physicalRadius, cssSize: physicalRadius / pixelRatio };
 }
 
-// Steam's header and footer, in CSS pixels at any UI scale. The Store, Quick
-// Access and side menus are native views drawn above the corners between them:
-// measured on a Deck at scale 1.5, they start 40 and end 40 CSS pixels from the edges.
+// Steam's header and footer, in CSS pixels. The Store, Quick Access and side
+// menus are native views drawn above the corners between them: measured on a
+// Deck at scale 1.5, they start 40 and end 40 CSS pixels from the edges.
+// Other UI scales are assumed to keep the same CSS height.
 export const BAR_HEIGHT = 40;
 
 /** Largest radius setting whose corner stays within the header and footer.

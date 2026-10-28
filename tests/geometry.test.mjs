@@ -71,8 +71,7 @@ test("every allowed radius has symmetric, monotone alpha and the correct circula
     }
     const expected = radius * radius * (1 - Math.PI / 4);
     assert.ok(Math.abs(area - expected) < radius * 2 / 255, `area mismatch at radius ${radius}`);
-    // The tangent pixel contains a small amount of coverage, rather than an
-    // opaque step or a missing endpoint. Its neighbours outside the tile are clear.
+    // The tangent pixel is mostly clear rather than an opaque step.
     assert.ok(alpha(radius - 1, 0) < 128);
   }
 });

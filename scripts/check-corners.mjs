@@ -63,7 +63,6 @@ try {
       const py = corner === 2 || corner === 3 ? png.height - 1 - y : y;
       return png.data[(py * png.width + px) * 4];
     };
-    // Mirrored corners must match the top-left one, and it must match the mask.
     let maxDifference = 0;
     for (let corner = 1; corner < 4; corner++) for (let y = 0; y < extent; y++) for (let x = 0; x < extent; x++) {
       maxDifference = Math.max(maxDifference, Math.abs(value(corner, x, y) - value(0, x, y)));

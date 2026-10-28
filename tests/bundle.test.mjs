@@ -50,7 +50,7 @@ async function loadPlugin({ compatible = true } = {}) {
     },
   });
   const bundle = await readFile(new URL("../dist/index.js", import.meta.url), "utf8");
-  // Rollup emits exactly this default export. No source implementation is replaced.
+  // The replacement below relies on Rollup emitting exactly this default export.
   assert.match(bundle, /export \{ index as default \};/);
   vm.runInContext(bundle.replace("export { index as default };", "globalThis.makePlugin = index;"), context);
   const plugin = context.makePlugin();

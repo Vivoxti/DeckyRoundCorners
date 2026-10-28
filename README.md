@@ -18,36 +18,26 @@ corner size and curvature.
   menus and the Store, which Steam draws above the corners, never cut into them.
 - The plugin uses an internal Steam hook that may change in a Steam update.
   If the hook is not found, the panel shows a message and the effect stays off.
-- HDR and sleep/wake have not been tested separately.
 
-## How it works and what it costs
+## How it works
 
-The plugin adds four small static images to the SP window. They all use one
-mirrored texture with a transparent background. Its alpha channel is computed
-from the area of each pixel covered by the chosen curve, and its size snaps to
-whole physical pixels at the CEF scale. The texture is only recreated when its
-size or shape changes; at radius 60 it takes 14 KiB uncompressed.
+- Four small static images over Steam's interface, all drawn from one
+  antialiased texture (14 KiB at radius 60). It is regenerated only
+  when you change the size or shape.
+- No backend, no per-frame code, no polling. Touch and buttons pass through
+  the corners.
+- Corners stay visible over games through Steam's Notification composition
+  mode, which is released when the effect is turned off.
 
-There is no per-frame JavaScript, game state polling, animation, network
-access, Python backend or separate process. Touch and controller input pass
-through the corners. Settings are stored locally in Steam's UI storage.
+## Performance
 
-To keep the corners visible after menus close, the plugin requests Steam's
-Notification composition mode. Steam manages the request's lifetime; its hook
-releases the request when the effect is turned off or the plugin unloads.
-Global composition settings are never changed directly.
+Measured on a Steam Deck with corners on and off:
 
-Measured on a Deck by alternating periods with and without corners (three
-3-minute periods each after a 5-minute warm-up): in a light game, whole-Deck
-power, APU power, GPU load and clock, CPU load, Steam and Gamescope did not
-change beyond the spread between identical periods (±0.06 W). In a heavy game,
-FPS was the same with and without corners.
-
-See [CHANGELOG.md](CHANGELOG.md) for the version history.
+- Light game: power draw, GPU, CPU, Steam and Gamescope load unchanged
+  (difference within the ±0.06 W measurement noise).
+- Heavy game: same FPS.
 
 ## References
 
 - [Decky template](https://github.com/SteamDeckHomebrew/decky-plugin-template):
   the official plugin build format and API.
-- [Decky PluginWrapper](https://github.com/SteamDeckHomebrew/decky-loader/blob/main/backend/decky_loader/plugin/plugin.py):
-  plugins without `main.py` are supported as passive and start no backend process.

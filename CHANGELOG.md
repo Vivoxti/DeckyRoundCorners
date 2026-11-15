@@ -5,7 +5,8 @@
 - Builds with pnpm, like the Decky plugin store: `pnpm-lock.yaml` replaces
   `package-lock.json` with the same dependency versions. `pnpm test` builds
   before testing without relying on a `pretest` script.
-- `plugin.json` points the store to a 1280×800 image, `assets/splash.png`.
+- `plugin.json` points the store to a 1280×800 image, `docs/splash.png`. It
+  stays out of `assets/`, which the store reserves for a plugin icon.
 
 ## 1.1.0
 

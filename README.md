@@ -1,6 +1,6 @@
 # Round Corners - a Decky plugin
 
-![Round Corners on a Steam Deck](assets/splash.png)
+![Round Corners on a Steam Deck](docs/splash.png)
 
 Rounds the corners of the Steam Deck screen in Gaming Mode, with adjustable
 corner size and curvature.

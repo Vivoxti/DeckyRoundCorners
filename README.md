@@ -49,6 +49,30 @@ Measured on a Steam Deck with corners on and off:
   (difference within the ±0.06 W measurement noise).
 - Heavy game: same FPS.
 
+The measurement scripts are on the
+[`dev-tools`](https://github.com/Vivoxti/DeckyRoundCorners/tree/dev-tools) branch.
+
+## Building
+
+The plugin itself builds and tests on `main`:
+
+```sh
+pnpm install
+pnpm test
+```
+
+The release ZIP is built on the
+[`dev-tools`](https://github.com/Vivoxti/DeckyRoundCorners/tree/dev-tools) branch,
+which adds the packaging and measurement scripts on top of `main`:
+
+```sh
+git switch dev-tools
+pnpm install
+pnpm package
+```
+
+The archive is written to `out/RoundCorners-<version>.zip`.
+
 ## References
 
 - [Decky template](https://github.com/SteamDeckHomebrew/decky-plugin-template):

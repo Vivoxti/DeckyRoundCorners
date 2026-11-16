@@ -8,10 +8,14 @@ export function findCompositionHook(): ((state: number, name: string) => void) |
   try {
     return findModuleExport((candidate: unknown) => {
       if (typeof candidate !== "function") return false;
+
       const source = Function.prototype.toString.call(candidate);
-      return ["Add", "Change", "Remove"].every((operation) =>
-        source.includes(`${operation}MinimumCompositionStateRequest`),
-      ) && !source.includes("m_mapCompositionStateRequests");
+
+      return (
+        ["Add", "Change", "Remove"].every((operation) =>
+          source.includes(`${operation}MinimumCompositionStateRequest`),
+        ) && !source.includes("m_mapCompositionStateRequests")
+      );
     });
   } catch (error) {
     console.warn("[Round Corners] Composition discovery failed", error);

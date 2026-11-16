@@ -43,8 +43,7 @@ First release. Changes since 0.4.0:
   a message appears only on a compatibility or saving error.
 - The source map `dist/index.js.map` now ships in the archive: the Decky build
   always references it from `index.js`.
-- Removed one-off debugging scripts from earlier versions; `check-corners.mjs`
-  checks only the current renderer.
+- Removed one-off debugging scripts from earlier versions.
 - Power and load measured on a Deck: in a light game the difference with and
   without corners is within measurement noise (±0.06 W); in a heavy game FPS
   did not change.

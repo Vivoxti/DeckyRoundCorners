@@ -54,20 +54,21 @@ The measurement scripts are on the
 
 ## Building
 
-The plugin itself builds and tests on `main`:
+The plugin itself builds on `main`:
 
 ```sh
 pnpm install
-pnpm test
+pnpm build
 ```
 
-The release ZIP is built on the
+Tests and the release ZIP are on the
 [`dev-tools`](https://github.com/Vivoxti/DeckyRoundCorners/tree/dev-tools) branch,
-which adds the packaging and measurement scripts on top of `main`:
+which adds the tests, packaging and measurement scripts on top of `main`:
 
 ```sh
 git switch dev-tools
 pnpm install
+pnpm test
 pnpm package
 ```
 

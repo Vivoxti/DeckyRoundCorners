@@ -172,7 +172,8 @@ test("real React mounts into visible SP, updates live, releases effects and remo
     assert.equal(visible.window.document.querySelector("[data-round-corners] img").style.width, "16px");
     const toggleShown = () => Boolean(visible.window.document.querySelector('[data-toggle="16:9 game"]'));
     const insets = () => [...visible.window.document.querySelectorAll("[data-round-corners] img")]
-      .map((corner) => Math.round(parseFloat(corner.style.top || corner.style.bottom) * 1.5 * 1e6) / 1e6);
+      // Like Chrome, jsdom serializes CSS lengths to 6 significant digits (26.6667px).
+      .map((corner) => Math.round(parseFloat(corner.style.top || corner.style.bottom) * 1.5 * 1e3) / 1e3);
     assert.equal(toggleShown(), false, "the 16:9 toggle needs a running game");
     const game = { appid: 367520, display_name: "Hollow Knight" };
     await act(() => steam({ app: game, composition: 0 }));

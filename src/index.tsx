@@ -29,7 +29,7 @@ import {
   subscribeForeground,
 } from "./foreground";
 import { DEFAULT_SETTINGS, MAX_RADIUS, createSettingsStore } from "./model.mjs";
-import { useVolumePopinShown } from "./volume";
+import { popinClassesInlined, useVolumePopinShown } from "./volume";
 import {
   CORNER_POSITIONS,
   createCornerTexture,
@@ -41,10 +41,17 @@ import {
 const COMPONENT_NAME = "DeckyRoundCorners.Overlay";
 const version = __PLUGIN_VERSION__;
 const SAVE_DELAY_MS = 400;
-const FADE_MS = 400;
 
-// Steam's volume popin slides in over 0.22 s; the top-left corner clears it as fast.
-const POPIN_FADE_MS = 220;
+// Corners slide in diagonally, slowing gently into place, and leave the same
+// way, speeding up gently.
+const SLIDE_MS = 600;
+const SLIDE_IN = "cubic-bezier(0.33, 1, 0.68, 1)";
+const SLIDE_OUT = "cubic-bezier(0.32, 0, 0.67, 0)";
+
+// Steam's volume popin slides in over 0.22 s. The top-left corner steps aside
+// in half that time, before the popin reaches it, or at once on Steam's ES
+// module builds, where the popin covers most of its way in the first frames.
+const POPIN_SLIDE_MS = popinClassesInlined ? 0 : 110;
 
 // When a menu, Quick Access or the library closes over a game, Steam switches
 // to Hidden composition at once, cutting off their ~310 ms exit animation.
@@ -171,9 +178,9 @@ export default definePlugin(() => {
       [display, physicalRadius, shape],
     );
 
-    // Corners fade in when mounted and whenever Steam's window reappears.
-    // While Steam's window is hidden nothing is drawn, so they reset to
-    // transparent; fading out on disable keeps the request until it ends.
+    // Corners slide in when mounted and whenever Steam's window reappears.
+    // While the window is hidden nothing is drawn, so they slide out unseen.
+    // Turned off, they slide out before the request ends.
     const [appeared, setAppeared] = useState(false);
 
     useEffect(() => {
@@ -182,7 +189,7 @@ export default definePlugin(() => {
       return () => display.cancelAnimationFrame(frame);
     }, [display]);
 
-    const opacity = shown && appeared && composition !== HIDDEN ? 1 : 0;
+    const visible = shown && appeared && composition !== HIDDEN;
 
     // The top-left corner steps aside for Steam's volume popin.
     const volumePopin = useVolumePopinShown(display.document);
@@ -199,6 +206,16 @@ export default definePlugin(() => {
 
         {CORNER_POSITIONS.map((position, index) => {
           const stepsAside = index === 0 && volumePopin;
+          const inPlace = visible && !stepsAside;
+
+          // Out of place, a corner is moved its own size toward its screen
+          // corner: off screen, or into a 16:9 game's black bar. In place it
+          // keeps a zero offset, so the browser interpolates the offset alone.
+          const awayX = "left" in position ? -100 : 100;
+          const awayY = "top" in position ? -100 : 100;
+          const offset = inPlace ? "translate(0, 0)" : `translate(${awayX}%, ${awayY}%)`;
+          const duration = stepsAside ? POPIN_SLIDE_MS : SLIDE_MS;
+          const easing = inPlace ? SLIDE_IN : SLIDE_OUT;
 
           const imageStyle: CSSProperties = {
             ...position,
@@ -214,8 +231,9 @@ export default definePlugin(() => {
             imageRendering: "pixelated",
             display: "block",
             pointerEvents: "none",
-            opacity: stepsAside ? 0 : opacity,
-            transition: `opacity ${stepsAside ? POPIN_FADE_MS : FADE_MS}ms ease-out`,
+            // Listed first, the offset applies on screen, after the mirroring.
+            transform: [offset, position.transform].filter(Boolean).join(" "),
+            transition: `transform ${duration}ms ${easing}`,
           };
 
           return <img key={index} src={texture} alt="" draggable={false} style={imageStyle} />;
@@ -263,7 +281,7 @@ export default definePlugin(() => {
         return;
       }
 
-      const timer = setTimeout(() => setMounted(false), FADE_MS);
+      const timer = setTimeout(() => setMounted(false), SLIDE_MS);
 
       return () => clearTimeout(timer);
     }, [active]);

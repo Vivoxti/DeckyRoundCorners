@@ -38,8 +38,9 @@ A per-game 16:9 toggle moves the corners to the picture's edges in 16:9-only gam
   0.4 s wait for Steam's closing animations, the plugin requests Steam's
   Notification composition. That keeps the corners visible without taking
   input. Steam's menus open and close exactly as without the plugin.
-- Corners fade in and out with a 0.4 s CSS opacity transition. The top-left
-  corner also steps aside for Steam's volume popin while it is shown.
+- Corners slide in and out diagonally from beyond the screen corners with a
+  0.6 s CSS transform transition. The top-left corner also steps aside for
+  Steam's volume popin while it is shown.
 
 ## Performance
 

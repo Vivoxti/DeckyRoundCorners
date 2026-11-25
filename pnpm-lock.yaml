@@ -23,8 +23,8 @@ importers:
         specifier: ^1.0.2
         version: 1.0.2
       '@decky/ui':
-        specifier: ^4.16.5
-        version: 4.16.5
+        specifier: ^5.0.2
+        version: 5.0.2
       '@rollup/plugin-replace':
         specifier: ^6.0.3
         version: 6.0.3(rollup@4.68.4)
@@ -55,8 +55,8 @@ packages:
   '@decky/rollup@1.0.2':
     resolution: {integrity: sha512-ixuHH3msw156ACbgWZi4hgccdzDBIuqYGOVja8sLX4lHFgaWUKji1vomDi7Dk1CamgjmKt+Dqf75Pezv2FB6Bw==}
 
-  '@decky/ui@4.16.5':
-    resolution: {integrity: sha512-3vefJUGf5eXW27H+TyU2seWQzJZB/I3/PJUNG6LfwNdvbjv6jCSAXkK+4A3ICT4c2BWjCVe+tZZf7JUq+ZDcfw==}
+  '@decky/ui@5.0.2':
+    resolution: {integrity: sha512-YQaOYUCgdgg1YRKRW/FDf47VKjcbhaetFQMPqyvRF8L0JSwXJDQ+RNAhTQ0v7+Tf9PlgDj5d22YesgSE4Yu7IQ==}
 
   '@isaacs/nonrecursive-glob-match@1.1.0':
     resolution: {integrity: sha512-GPm/Dbvk5RLmhRnxXIa7nTpK0xtl4E0wj0MslsuNiJ1FIROU+2+9lgUC/dgF7Ey4QCWhfEsgxilMRMCdHPfDfw==}
@@ -612,7 +612,7 @@ snapshots:
       tslib: 2.9.1
       typescript: 5.9.3
 
-  '@decky/ui@4.16.5': {}
+  '@decky/ui@5.0.2': {}
 
   '@isaacs/nonrecursive-glob-match@1.1.0': {}
 

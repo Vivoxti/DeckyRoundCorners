@@ -1,13 +1,5 @@
 # Changelog
 
-## Unreleased
-
-- Builds with pnpm, like the Decky plugin store: `pnpm-lock.yaml` replaces
-  `package-lock.json` with the same dependency versions. `pnpm test` builds
-  before testing without relying on a `pretest` script.
-- `plugin.json` points the store to a 1280×800 image, `docs/splash.png`. It
-  stays out of `assets/`, which the store reserves for a plugin icon.
-
 ## 1.1.0
 
 - 16:9 game toggle, saved per game. While a 16:9-only game is on screen, the
@@ -23,17 +15,29 @@
   - closing Quick Access flashed a black screen with an "Abort game" footer
     for up to a second;
   - side menus slid away instead of vanishing.
-- Corners fade in and out over 0.4 s: when turned on or off, and when they
-  return over a game after a menu closes. The fade is a CSS opacity
-  transition that runs only during those changes.
-- The top-left corner fades out while Steam's volume popin is shown, so the
-  popin is no longer cut off under it. It fades over 0.22 s, as fast as the
-  popin slides in, and returns over 0.4 s. A MutationObserver watches the
-  class of the popin's single element.
+- Corners slide in diagonally from beyond the screen corners over 0.6 s,
+  slowing gently into place, and slide out the same way: when turned on or
+  off, and when they return over a game after a menu closes. In a 16:9 game
+  they slide out of the black bars. The slide is a CSS transform transition
+  that runs only during those changes.
+- The top-left corner steps aside while Steam's volume popin is shown, so the
+  popin is no longer cut off under it. It leaves in 0.11 s, half the time the
+  popin takes to slide in, or at once on the Steam beta, whose popin covers
+  most of its way in the first frames. A MutationObserver watches the class
+  of the popin's single element.
+- Works on the Steam beta from November 2026 with Decky Loader 4. That Steam
+  is built from ES modules instead of webpack: it no longer exports its
+  composition hook, and the volume popin's class names are inlined into its
+  component. Both are also looked up inside Steam's modules there; stable
+  Steam and Decky Loader 3 use the webpack lookups.
 - The composition request is named "Round Corners" in Steam's composition log.
 - After a reload or update, Decky can keep showing the old instance's panel
   while it stays open in Quick Access. That panel now asks you to reopen
   Round Corners instead of changing settings the new instance doesn't see.
+- Builds with pnpm, like the Decky plugin store: `pnpm-lock.yaml` replaces
+  `package-lock.json`. `@decky/ui` 5.0.2 declares the module scope lookups.
+- `plugin.json` points the store to a 1280×800 image, `docs/splash.png`. It
+  stays out of `assets/`, which the store reserves for a plugin icon.
 
 ## 1.0.0
 
